@@ -58,10 +58,10 @@ LIKE world_layoffs.layoffs;
 INSERT INTO layoffs_staging 
 SELECT * FROM world_layoffs.layoffs;
 ```
--- Steps to follow for Data Wrangling :
--- I. Remove duplicates
--- II. Standardize data and fix errors
--- III. Handle null values
+-- Steps to follow for Data Wrangling:
+-- I. Remove duplicates <>
+-- II. Standardize data and fix errors <>
+-- III. Handle null values <>
 -- IV. Remove unnecessary columns and rows
 
 ##### I. Remove Duplicates
