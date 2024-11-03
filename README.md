@@ -6,10 +6,45 @@
 3. [Dataset Description](#dataset-description)
 4. [Project Workflow](#project-workflow)
 5. [Power BI Dashboard](#power-bi-dashboard)
-6. [Predictions](#predictions)
-7. [Actionable Strategies to Reduce Churn](#actionable-strategies-to-reduce-churn)
+6. [Actionable Strategies to Reduce Churn](#actionable-strategies-to-reduce-churn)
 
-## Data Wrangling
+
+
+## Project Objective:  
+To create a comprehensive ETL (Extract, Transform, Load) process in a MySQL database and develop Power BI reports utilizing layoffs data to achieve the following goals:
+
+1. **Data Wrangling**: 
+   - Cleaning, transforming, and standardizing data.
+   - Removing unnecessary features.
+   - Handling null values effectively.
+
+2. **Comprehensive Exploratory Data Analysis (EDA)**: 
+   - Analyzing layoffs data across multiple dimensions, including:
+     - Years
+     - Company
+     - Industry
+     - Stages
+     - Location
+
+## ETL Framework
+
+Our ETL framework utilizes the following components:
+
+1. **CSV File**: Serves as the source file for our data.
+2. **MySQL Workbench**: We'll use the inbuilt Import Wizard to handle data transformation and loading.
+3. **MySQL Database**: The final data will be loaded here, serving as our data warehouse with tables structured for analysis and reporting.
+
+
+### Data Description
+
+  **Total Rows**: 2362
+  **Total Columns**: 9
+  **Dataset Overview**: This dataset contains layoffs information for a U.S.-based company from 2020 to 2023, including details such as the company name, location, industry, total employees laid off, percentage laid off, date of layoffs, stage of layoffs, country, and funds raised in millions.
+
+## Project Workflow
+### SQL (SSMS)
+
+#### Data Wrangling
 -- Select all data from the original `layoffs` table
 ```bash
 SELECT * 
@@ -24,21 +59,21 @@ INSERT INTO layoffs_staging
 SELECT * FROM world_layoffs.layoffs;
 ```
 -- Steps to follow for Data Wrangling :
--- 1. Remove duplicates
--- 2. Standardize data and fix errors
--- 3. Handle null values
--- 4. Remove unnecessary columns and rows
+-- I. Remove duplicates
+-- II. Standardize data and fix errors
+-- III. Handle null values
+-- IV. Remove unnecessary columns and rows
 
-### 1. Remove Duplicates
+##### I. Remove Duplicates
 
--- Check for duplicates in the staging table
+1.Check for duplicates in the staging table
  ```bash
 SELECT company, industry, total_laid_off, `date`,
 	ROW_NUMBER() OVER (
 		PARTITION BY company, industry, total_laid_off, `date`) AS row_num
 	FROM world_layoffs.layoffs_staging;
  ```
---Identify rows that are duplicates
+2.Identify rows that are duplicates
  ```bash
 SELECT *
 FROM (
@@ -50,7 +85,7 @@ FROM (
 ) duplicates
 WHERE row_num > 1;
  ```
--- Delete duplicates based on specific criteria
+3.Delete duplicates based on specific criteria
  ```bash
 WITH DELETE_CTE AS 
 (
@@ -68,7 +103,7 @@ IN (
 	FROM DELETE_CTE
 );
  ````
--- Optionally, add `row_num` column for further duplicate handling
+4. Optionally, add `row_num` column for further duplicate handling
 ```bash
 ALTER TABLE world_layoffs.layoffs_staging ADD row_num INT;
 ````
@@ -93,27 +128,27 @@ SELECT `company`, `location`, `industry`, `total_laid_off`, `percentage_laid_off
   ROW_NUMBER() OVER (PARTITION BY company, location, industry, total_laid_off, percentage_laid_off, `date`, stage, country, funds_raised_millions) AS row_num
   FROM world_layoffs.layoffs_staging;
 ```
--- Delete duplicates based on `row_num`
+5. Delete duplicates based on `row_num`
 ```bash
 DELETE FROM world_layoffs.layoffs_staging2
 WHERE row_num >= 2;
 ```
-### 2. Standardize Data
+### II. Standardize Data
 
--- Retrieve all records from the layoffs staging table 
+6. Retrieve all records from the layoffs staging table 
 ```bash
 SELECT * 
 FROM world_layoffs.layoffs_staging2;
 ````
 
--- Standardize nulls and blank rows for the `industry` column
+7. Standardize nulls and blank rows for the `industry` column
 ```bash
 UPDATE world_layoffs.layoffs_staging2
 SET industry = NULL
 WHERE industry = '';
 ```
 
--- if we look at industry it looks like we have some null and empty rows, let's take a look at these
+8. if we look at industry it looks like we have some null and empty rows, let's take a look at these
 ```bash
 SELECT DISTINCT industry
 FROM world_layoffs.layoffs_staging2
@@ -133,7 +168,7 @@ FROM world_layoffs.layoffs_staging2
 WHERE company LIKE 'Bally%';
 ```
 
--- nothing wrong here
+9. nothing wrong here
 ```bash
 SELECT *
 FROM world_layoffs.layoffs_staging2
@@ -144,14 +179,14 @@ WHERE company LIKE 'airbnb%';
 -- write a query that if there is another row with the same company name, it will update it to the non-null industry values
 -- makes it easy so if there were thousands we wouldn't have to manually check them all
 
--- we should set the blanks to nulls since those are typically easier to work with
+10. we should set the blanks to nulls since those are typically easier to work with
 ```bash
 UPDATE world_layoffs.layoffs_staging2
 SET industry = NULL
 WHERE industry = '';
 ```
 
--- now if we check those are all null
+11. now if we check those are all null
 ```bash
 SELECT *
 FROM world_layoffs.layoffs_staging2
@@ -160,7 +195,7 @@ OR industry = ''
 ORDER BY industry;
 ```
 
--- now we need to populate those nulls if possible
+12. now we need to populate those nulls if possible
 ```bash
 UPDATE layoffs_staging2 t1
 JOIN layoffs_staging2 t2
@@ -170,7 +205,7 @@ WHERE t1.industry IS NULL
 AND t2.industry IS NOT NULL;
 ```
 
--- and if we check it looks like Bally's was the only one without a populated row to populate this null values
+13. and if we check it looks like Bally's was the only one without a populated row to populate this null values
 ```bash
 SELECT *
 FROM world_layoffs.layoffs_staging2
@@ -180,63 +215,63 @@ ORDER BY industry;
 ```
 
 
--- I also noticed the Crypto has multiple different variations. We need to standardize that - let's set all to Crypto
+14.  I also noticed the Crypto has multiple different variations. We need to standardize that - let's set all to Crypto
 ```bash
 SELECT DISTINCT industry
 FROM world_layoffs.layoffs_staging2
 ORDER BY industry;
 ```
 
--- Standardize variations in `industry` names (e.g., 'Crypto Currency' to 'Crypto')
+15.  Standardize variations in `industry` names (e.g., 'Crypto Currency' to 'Crypto')
 ```bash
 UPDATE layoffs_staging2
 SET industry = 'Crypto'
 WHERE industry IN ('Crypto Currency', 'CryptoCurrency');
 ````
 
--- now that's taken care of:
+16.  now that's taken care of:
 ```bash
 SELECT DISTINCT industry
 FROM world_layoffs.layoffs_staging2
 ORDER BY industry;
 ```
--- everything looks good except apparently we have some "United States" and some "United States." with a period at the end. Let's standardize this.
+17. everything looks good except apparently we have some "United States" and some "United States." with a period at the end. Let's standardize this.
 ```bash
 SELECT DISTINCT country
 FROM world_layoffs.layoffs_staging2
 ORDER BY country;
 ```
--- Standardize `country` names to remove trailing periods
+18.  Standardize `country` names to remove trailing periods
 ```bash
 UPDATE layoffs_staging2
 SET country = TRIM(TRAILING '.' FROM country);
 ```
 
--- now if we run this again it is fixed
+19.  now if we run this again it is fixed
 ```bash
 SELECT DISTINCT country
 FROM world_layoffs.layoffs_staging2
 ORDER BY country;
 ```
 
--- Let's also fix the date columns:
+20. Let's also fix the date columns:
 ```bash
 SELECT *
 FROM world_layoffs.layoffs_staging2;
 ```
 
--- Convert `date` to a consistent date format
+21. Convert `date` to a consistent date format
 ```bash
 UPDATE layoffs_staging2
 SET `date` = STR_TO_DATE(`date`, '%m/%d/%Y');
 ````
--- Modify the `date` column to the DATE data type
+22.  Modify the `date` column to the DATE data type
 ```bash
 ALTER TABLE layoffs_staging2
 MODIFY COLUMN `date` DATE;
 ```
 
--- Final check of all records in the table
+23.  Final check of all records in the table
 ```bash
 SELECT *
 FROM world_layoffs.layoffs_staging2;
@@ -245,6 +280,7 @@ FROM world_layoffs.layoffs_staging2;
 
 
 ### 3.Finding Null Values
+24. Column wise Null percentage count 
 ```bash
  SELECT 
     COUNT(*) AS total_rows,
@@ -272,13 +308,14 @@ Delete Rows: Consider deleting rows with NULL values in the total_laid_off and p
 
 ````
 ### 4. Remove Useless Data
+25.  Delete rows with null values in both `total_laid_off` and `percentage_laid_off`
 ```bash
 -- Delete rows with null values in both `total_laid_off` and `percentage_laid_off`
 DELETE FROM world_layoffs.layoffs_staging2
 WHERE total_laid_off IS NULL
 AND percentage_laid_off IS NULL;
 ````
--- Drop the `row_num` column now that duplicates are removed
+26.  Drop the `row_num` column now that duplicates are removed
 ```bash
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
