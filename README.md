@@ -29,7 +29,7 @@ SELECT * FROM world_layoffs.layoffs;
 -- 3. Handle null values
 -- 4. Remove unnecessary columns and rows
 
-1. Remove Duplicates
+### 1. Remove Duplicates
 
 -- Check for duplicates in the staging table
  ```bash
@@ -98,7 +98,7 @@ SELECT `company`, `location`, `industry`, `total_laid_off`, `percentage_laid_off
 DELETE FROM world_layoffs.layoffs_staging2
 WHERE row_num >= 2;
 ```
-2. Standardize Data
+### 2. Standardize Data
 
 -- Retrieve all records from the layoffs staging table 
 ```bash
@@ -244,7 +244,7 @@ FROM world_layoffs.layoffs_staging2;
 
 
 
-3. Handle Null Values
+### 3. Handle Null Values
 ```bash
 SELECT 
     SUM(CASE WHEN company IS NULL THEN 1 ELSE 0 END) AS null_company,
@@ -261,7 +261,7 @@ FROM world_layoffs.layoffs_staging2;
 ```bash
 
 ````
-4. Remove Useless Data
+### 4. Remove Useless Data
 ```bash
 -- Delete rows with null values in both `total_laid_off` and `percentage_laid_off`
 DELETE FROM world_layoffs.layoffs_staging2
