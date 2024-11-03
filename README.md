@@ -9,7 +9,7 @@
 6. [Predictions](#predictions)
 7. [Actionable Strategies to Reduce Churn](#actionable-strategies-to-reduce-churn)
 
-
+## Data Wrangling
 -- Select all data from the original `layoffs` table
 ```bash
 SELECT * 
@@ -244,20 +244,30 @@ FROM world_layoffs.layoffs_staging2;
 
 
 
-### 3. Handle Null Values
+### 3.Finding Null Values
 ```bash
-SELECT 
-    SUM(CASE WHEN company IS NULL THEN 1 ELSE 0 END) AS null_company,
-    SUM(CASE WHEN location IS NULL THEN 1 ELSE 0 END) AS null_location,
-    SUM(CASE WHEN industry IS NULL THEN 1 ELSE 0 END) AS null_industry,
-    SUM(CASE WHEN total_laid_off IS NULL THEN 1 ELSE 0 END) AS null_total_laid_off,
-    SUM(CASE WHEN percentage_laid_off IS NULL THEN 1 ELSE 0 END) AS null_percentage_laid_off,
-    SUM(CASE WHEN `date` IS NULL THEN 1 ELSE 0 END) AS null_date,
-    SUM(CASE WHEN stage IS NULL THEN 1 ELSE 0 END) AS null_stage,
-    SUM(CASE WHEN country IS NULL THEN 1 ELSE 0 END) AS null_country,
-    SUM(CASE WHEN funds_raised_millions IS NULL THEN 1 ELSE 0 END) AS null_funds_raised_millions
+ SELECT 
+    COUNT(*) AS total_rows,
+    SUM(CASE WHEN company IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_company,
+    SUM(CASE WHEN location IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_location,
+    SUM(CASE WHEN industry IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_industry,
+    SUM(CASE WHEN total_laid_off IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_total_laid_off,
+    SUM(CASE WHEN percentage_laid_off IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_percentage_laid_off,
+    SUM(CASE WHEN `date` IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_date,
+    SUM(CASE WHEN stage IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_stage,
+    SUM(CASE WHEN country IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_country,
+    SUM(CASE WHEN funds_raised_millions IS NULL THEN 1 ELSE 0 END) / COUNT(*) * 100 AS percent_null_funds_raised_millions
 FROM world_layoffs.layoffs_staging2;
 ```
+
+Summary of Missing Data:
+
+Total Laid Off: 31.34% of rows are missing values, indicating significant missing data.
+Percentage Laid Off: 33.25% of rows are also missing values, which is similarly concerning.
+Recommendations:
+
+Delete Rows: Consider deleting rows with NULL values in the total_laid_off and percentage_laid_off columns to ensure the dataset is complete and to reduce potential bias in your analysis. This approach is preferred over imputation given the high percentages of missing data.
+
 ```bash
 
 ````
@@ -273,7 +283,7 @@ AND percentage_laid_off IS NULL;
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
 ```
--- Exploratory Data Analysis (EDA)
+## Exploratory Data Analysis (EDA)
 ```bash
 -- Find maximum layoffs
 SELECT MAX(total_laid_off)
