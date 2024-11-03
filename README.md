@@ -37,20 +37,20 @@ Our ETL framework utilizes the following components:
 
 ### Dataset Description
 
-  **Total Rows**: 2362
-  **Total Columns**: 9
-  **Dataset Overview**: This dataset contains layoffs information for a U.S.-based company from 2020 to 2023, including details such as the company name, location, industry, total employees laid off, percentage laid off, date of layoffs, stage of layoffs, country, and funds raised in millions.
+ - **Total Rows**: 2362
+ - **Total Columns**: 9
+ - **Dataset Overview**: This dataset contains layoffs information for a U.S.-based company from 2020 to 2023, including details such as the company name, location, industry, total employees laid off, percentage laid off, date of layoffs, stage of layoffs, country, and funds raised in millions.
 
 ## Project Workflow
 ### MySQL
 
 #### Data Wrangling
--- Select all data from the original `layoffs` table
+Select all data from the original `layoffs` table
 ```bash
 SELECT * 
 FROM world_layoffs.layoffs;
 ```
--- Step 1: Create a staging table Inserting the Data as a backup for data cleaning
+Create a staging table Inserting the Data as a backup for data cleaning
 ```bash
 CREATE TABLE world_layoffs.layoffs_staging 
 LIKE world_layoffs.layoffs;
