@@ -35,14 +35,14 @@ Our ETL framework utilizes the following components:
 3. **MySQL Database**: The final data will be loaded here, serving as our data warehouse with tables structured for analysis and reporting.
 
 
-### Data Description
+### Dataset Description
 
   **Total Rows**: 2362
   **Total Columns**: 9
   **Dataset Overview**: This dataset contains layoffs information for a U.S.-based company from 2020 to 2023, including details such as the company name, location, industry, total employees laid off, percentage laid off, date of layoffs, stage of layoffs, country, and funds raised in millions.
 
 ## Project Workflow
-### SQL (SSMS)
+### MySQL
 
 #### Data Wrangling
 -- Select all data from the original `layoffs` table
