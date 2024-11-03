@@ -41,6 +41,9 @@ Our ETL framework utilizes the following components:
  - **Total Columns**: 9
  - **Dataset Overview**: This dataset contains layoffs information for a U.S.-based company from 2020 to 2023, including details such as the company name, location, industry, total employees laid off, percentage laid off, date of layoffs, stage of layoffs, country, and funds raised in millions.
 
+### Note: Please refer `Dataset` folder above for dataset.
+
+
 ## Project Workflow
 ### MySQL
 
