@@ -15,7 +15,7 @@
 SELECT * 
 FROM world_layoffs.layoffs;
 ```
--- Step 1: Create a staging table as a backup for data cleaning
+-- Step 1: Create a staging table Inserting the Data as a backup for data cleaning
 ```bash
 CREATE TABLE world_layoffs.layoffs_staging 
 LIKE world_layoffs.layoffs;
@@ -51,6 +51,7 @@ FROM (
 WHERE row_num > 1;
  ```
 -- Delete duplicates based on specific criteria
+ ```bash
 WITH DELETE_CTE AS 
 (
 	SELECT company, location, industry, total_laid_off, percentage_laid_off, `date`, stage, country, funds_raised_millions,
@@ -66,10 +67,12 @@ IN (
 	SELECT company, location, industry, total_laid_off, percentage_laid_off, `date`, stage, country, funds_raised_millions, row_num
 	FROM DELETE_CTE
 );
-
+ ````
 -- Optionally, add `row_num` column for further duplicate handling
+```bash
 ALTER TABLE world_layoffs.layoffs_staging ADD row_num INT;
-
+````
+```bash
 -- Create a new table with added row numbers to easily delete duplicates
 CREATE TABLE `world_layoffs`.`layoffs_staging2` (
   `company` TEXT,
@@ -89,18 +92,20 @@ INSERT INTO `world_layoffs`.`layoffs_staging2`
 SELECT `company`, `location`, `industry`, `total_laid_off`, `percentage_laid_off`, `date`, `stage`, `country`, `funds_raised_millions`,
   ROW_NUMBER() OVER (PARTITION BY company, location, industry, total_laid_off, percentage_laid_off, `date`, stage, country, funds_raised_millions) AS row_num
   FROM world_layoffs.layoffs_staging;
-
+```
 -- Delete duplicates based on `row_num`
+```bash
 DELETE FROM world_layoffs.layoffs_staging2
 WHERE row_num >= 2;
-
+```
 -- 2. Standardize Data
-
+```bash
 -- Standardize nulls and blank rows for the `industry` column
 UPDATE world_layoffs.layoffs_staging2
 SET industry = NULL
 WHERE industry = '';
-
+```
+```bash
 -- Populate missing values in the `industry` column based on existing values for the same company
 UPDATE layoffs_staging2 t1
 JOIN layoffs_staging2 t2
@@ -108,39 +113,44 @@ ON t1.company = t2.company
 SET t1.industry = t2.industry
 WHERE t1.industry IS NULL
 AND t2.industry IS NOT NULL;
-
+```
 -- Standardize variations in `industry` names (e.g., 'Crypto Currency' to 'Crypto')
+```bash
 UPDATE layoffs_staging2
 SET industry = 'Crypto'
 WHERE industry IN ('Crypto Currency', 'CryptoCurrency');
-
+````
 -- Standardize `country` names to remove trailing periods
+```bash
 UPDATE layoffs_staging2
 SET country = TRIM(TRAILING '.' FROM country);
-
+```
 -- Convert `date` to a consistent date format
+```bash
 UPDATE layoffs_staging2
 SET `date` = STR_TO_DATE(`date`, '%m/%d/%Y');
-
+````
 -- Modify the `date` column to the DATE data type
+```bash
 ALTER TABLE layoffs_staging2
 MODIFY COLUMN `date` DATE;
-
+```
 -- 3. Handle Null Values
-
+```bash
 -- Keep `NULL` values in `total_laid_off`, `percentage_laid_off`, and `funds_raised_millions` for easier analysis during EDA.
-
+````
 -- 4. Remove Useless Data
-
+```bash
 -- Delete rows with null values in both `total_laid_off` and `percentage_laid_off`
 DELETE FROM world_layoffs.layoffs_staging2
 WHERE total_laid_off IS NULL
 AND percentage_laid_off IS NULL;
-
+````
 -- Drop the `row_num` column now that duplicates are removed
+```bash
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
-
+```
 -- Exploratory Data Analysis (EDA)
 
 -- Find maximum layoffs
