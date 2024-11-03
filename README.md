@@ -1,4 +1,4 @@
-## Tools Used - MYSQL, Power BI
+## Tools Used - MySQL, Power BI
 
 ## Table of Contents
 1. [Project Objective](#project-objective)
