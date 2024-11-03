@@ -284,54 +284,164 @@ ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
 ```
 ## Exploratory Data Analysis (EDA)
-```bash
--- Find maximum layoffs
-SELECT MAX(total_laid_off)
-FROM world_layoffs.layoffs_staging2;
-```
--- Identify the highest percentage of layoffs
-```bash
-SELECT MAX(percentage_laid_off), MIN(percentage_laid_off)
-FROM world_layoffs.layoffs_staging2
-WHERE percentage_laid_off IS NOT NULL;
-```
--- Companies with 100% layoffs
-```bash
-SELECT *
-FROM world_layoffs.layoffs_staging2
-WHERE percentage_laid_off = 1;
-```
--- Companies with the most layoffs
-```bash
-SELECT company, SUM(total_laid_off) AS total_laid_off
-FROM world_layoffs.layoffs_staging2
-GROUP BY company
-ORDER BY total_laid_off DESC
-LIMIT 10;
-```
--- Summarize layoffs by `location`
-```bash
-SELECT location, SUM(total_laid_off)
-FROM world_layoffs.layoffs_staging2
-GROUP BY location
-ORDER BY SUM(total_laid_off) DESC
-LIMIT 10;
-````
--- Total layoffs by year
-```bash
-SELECT YEAR(date), SUM(total_laid_off)
-FROM world_layoffs.layoffs_staging2
-GROUP BY YEAR(date)
-ORDER BY YEAR(date);
-```
--- Rolling total of layoffs by month
-```bash
-WITH DATE_CTE AS (
-  SELECT DATE_FORMAT(date, '%Y-%m') AS month, SUM(total_laid_off) AS total_laid_off
-  FROM layoffs_staging2
-  GROUP BY month
-)
-SELECT month, SUM(total_laid_off) OVER (ORDER BY month) AS rolling_total_layoffs
-FROM DATE_CTE
-ORDER BY month;
-````
+
+Conduct Exploratory Data Analysis (EDA): Explore the dataset to identify trends, patterns, and outliers while maintaining an open-minded approach, allowing for the discovery of unexpected insights, guided by initial inquiries about the data.
+
+Here’s a description for each query in the provided SQL code related to analyzing layoffs data:
+
+1. **Select All Data**:
+   ```sql
+   SELECT * 
+   FROM world_layoffs.layoffs_staging2;
+   ```
+   This query retrieves all records from the `layoffs_staging2` table to provide a complete view of the dataset.
+
+2. **Maximum Total Laid Off**:
+   ```sql
+   SELECT MAX(total_laid_off)
+   FROM world_layoffs.layoffs_staging2;
+   ```
+   This query finds the maximum number of employees laid off in a single incident, helping to identify the largest layoff event recorded.
+
+3. **Maximum and Minimum Percentage of Layoffs**:
+   ```sql
+   SELECT MAX(percentage_laid_off), MIN(percentage_laid_off)
+   FROM world_layoffs.layoffs_staging2
+   WHERE  percentage_laid_off IS NOT NULL;
+   ```
+   This query retrieves the highest and lowest percentage of employees laid off across all records, providing insights into the extent of layoffs relative to company size.
+
+4. **Companies with 100% Layoffs**:
+   ```sql
+   SELECT *
+   FROM world_layoffs.layoffs_staging2
+   WHERE  percentage_laid_off = 1;
+   ```
+   This query selects companies where 100% of the employees were laid off, typically indicating company closures or severe financial difficulties.
+
+5. **Companies with 100% Layoffs Ordered by Funds Raised**:
+   ```sql
+   SELECT *
+   FROM world_layoffs.layoffs_staging2
+   WHERE  percentage_laid_off = 1
+   ORDER BY funds_raised_millions DESC;
+   ```
+   This query lists companies that laid off all their employees, ordered by the amount of funds they previously raised, which can highlight significant failures in the startup ecosystem.
+
+6. **Companies with the Biggest Single Layoff**:
+   ```sql
+   SELECT company, total_laid_off
+   FROM world_layoffs.layoffs_staging
+   ORDER BY 2 DESC
+   LIMIT 5;
+   ```
+   This query identifies the top five companies that experienced the largest single-day layoffs, useful for understanding extreme events in the data.
+
+7. **Companies with Most Total Layoffs**:
+   ```sql
+   SELECT company, SUM(total_laid_off)
+   FROM world_layoffs.layoffs_staging2
+   GROUP BY company
+   ORDER BY 2 DESC
+   LIMIT 10;
+   ```
+   This query calculates and ranks the total number of layoffs for each company, showing which companies had the highest cumulative layoffs.
+
+8. **Total Layoffs by Location**:
+   ```sql
+   SELECT location, SUM(total_laid_off)
+   FROM world_layoffs.layoffs_staging2
+   GROUP BY location
+   ORDER BY 2 DESC
+   LIMIT 10;
+   ```
+   This query summarizes layoffs by geographical location, helping to identify regions most affected by layoffs.
+
+9. **Total Layoffs by Country**:
+   ```sql
+   SELECT country, SUM(total_laid_off)
+   FROM world_layoffs.layoffs_staging2
+   GROUP BY country
+   ORDER BY 2 DESC;
+   ```
+   This query groups and sums layoffs by country to analyze the impact of layoffs on a national level.
+
+10. **Total Layoffs by Year**:
+    ```sql
+    SELECT YEAR(date), SUM(total_laid_off)
+    FROM world_layoffs.layoffs_staging2
+    GROUP BY YEAR(date)
+    ORDER BY 1 ASC;
+    ```
+    This query aggregates the total number of layoffs by year, providing a temporal view of layoff trends.
+
+11. **Total Layoffs by Industry**:
+    ```sql
+    SELECT industry, SUM(total_laid_off)
+    FROM world_layoffs.layoffs_staging2
+    GROUP BY industry
+    ORDER BY 2 DESC;
+    ```
+    This query calculates the total layoffs by industry, allowing for an understanding of which sectors are most impacted.
+
+12. **Delete Rows with Null Stages**:
+    ```sql
+    DELETE FROM layoffs_staging2
+    WHERE stage IS NULL;
+    ```
+    This query deletes records from the `layoffs_staging2` table where the stage is null, cleaning the dataset for further analysis.
+
+13. **Total Layoffs by Stage**:
+    ```sql
+    SELECT stage, SUM(total_laid_off)
+    FROM world_layoffs.layoffs_staging2
+    GROUP BY stage
+    ORDER BY 2 DESC;
+    ```
+    This query sums layoffs by the stage of the layoffs process, giving insights into how layoffs are distributed across different stages.
+
+14. **Top Companies with Most Layoffs by Year**:
+    ```sql
+    WITH Company_Year AS 
+    (
+      SELECT company, YEAR(date) AS years, SUM(total_laid_off) AS total_laid_off
+      FROM layoffs_staging2
+      GROUP BY company, YEAR(date)
+    ),
+    Company_Year_Rank AS (
+      SELECT company, years, total_laid_off, DENSE_RANK() OVER (PARTITION BY years ORDER BY total_laid_off DESC) AS ranking
+      FROM Company_Year
+    )
+    SELECT company, years, total_laid_off, ranking
+    FROM Company_Year_Rank
+    WHERE ranking <= 3
+    AND years IS NOT NULL
+    ORDER BY years ASC, total_laid_off DESC;
+    ```
+    This query creates a Common Table Expression (CTE) to rank companies by total layoffs per year and retrieves the top three companies with the most layoffs for each year, providing a year-wise view of layoffs.
+
+15. **Rolling Total of Layoffs Per Month**:
+    ```sql
+    SELECT SUBSTRING(date,1,7) as dates, SUM(total_laid_off) AS total_laid_off
+    FROM layoffs_staging2
+    GROUP BY dates
+    ORDER BY dates ASC;
+    ```
+    This query aggregates total layoffs by month to analyze trends over time on a monthly basis.
+
+16. **Rolling Total of Layoffs Using CTE**:
+    ```sql
+    WITH DATE_CTE AS 
+    (
+      SELECT SUBSTRING(date,1,7) as dates, SUM(total_laid_off) AS total_laid_off
+      FROM layoffs_staging2
+      GROUP BY dates
+      ORDER BY dates ASC
+    )
+    SELECT dates, SUM(total_laid_off) OVER (ORDER BY dates ASC) as rolling_total_layoffs
+    FROM DATE_CTE
+    ORDER BY dates ASC;
+    ```
+    This query uses a CTE to calculate the rolling total of layoffs per month, providing insights into cumulative layoffs over time. 
+
+Each of these queries serves to explore different aspects of the layoffs data, from examining total layoffs and percentages to identifying trends over time and by various categories.
