@@ -326,7 +326,7 @@ ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
 ```
 
-27. After deleting rows with null values in both `total_laid_off` and `percentage_laid_off` , still we left with 18.8632% nulls for `total_laid_off` , 21.2777% for `percentage_laid_off`, 8.0986% for `funds_raised_millions` then decided to do the simple Meadin imputation technique based on most appropriate dimension Industry in the dataset.
+27. After deleting rows with null values in both `total_laid_off` and `percentage_laid_off` , still we left with 18.8632% nulls for `total_laid_off` , 21.2777% for `percentage_laid_off`, 8.0986% for `funds_raised_millions` then decided to do the simple Median imputation technique ( becuase it is most suitable when outliers are present ) based on most appropriate dimension Industry in the dataset.
 
  - Medial Imputation for `total_laid_off`
  - Step 1: Calculate median `total_laid_off` for each industry
