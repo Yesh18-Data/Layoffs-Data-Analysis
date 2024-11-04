@@ -328,8 +328,9 @@ DROP COLUMN row_num;
 
 27. After deleting rows with null values in both `total_laid_off` and `percentage_laid_off` , still we left with 18.8632% nulls for `total_laid_off` , 21.2777% for `percentage_laid_off`, 8.0986% for `funds_raised_millions` then decided to do the simple Meadin imputation technique based on most appropriate dimension Industry in the dataset.
 
- -Medial Imputation for `total_laid_off`
-Step 1: Calculate median `total_laid_off` for each industry
+ - Medial Imputation for `total_laid_off`
+ - Step 1: Calculate median `total_laid_off` for each industry
+
 ```bash
 WITH RankedData AS (
     SELECT 
@@ -357,7 +358,8 @@ WHERE w.total_laid_off IS NULL;
 
 
  - Medial Imputation for `percentage_laid_off`
- Step 1: Calculate median `percentage_laid_off` for each industry
+ - Step 1: Calculate median `percentage_laid_off` for each industry
+ 
 ```bash
 WITH RankedData AS (
     SELECT 
@@ -383,7 +385,18 @@ SET w.percentage_laid_off = COALESCE(w.percentage_laid_off, m.median_percentage_
 WHERE w.percentage_laid_off IS NULL;
 ```
 
-
+ - Medial Imputation for `funds_raised_millions`
+````bash
+UPDATE world_layoffs.layoffs_staging2 AS w
+JOIN (
+    SELECT industry, AVG(funds_raised_millions) AS avg_funds_raised
+    FROM world_layoffs.layoffs_staging2
+    WHERE funds_raised_millions IS NOT NULL
+    GROUP BY industry
+) AS g ON w.industry = g.industry
+SET w.funds_raised_millions = COALESCE(w.funds_raised_millions, g.avg_funds_raised)
+WHERE w.funds_raised_millions IS NULL;
+````
 
 
 ## Exploratory Data Analysis (EDA)
@@ -409,8 +422,7 @@ Here’s a description for each query in the provided SQL code related to analyz
 3. **Maximum and Minimum Percentage of Layoffs**:
    ```sql
    SELECT MAX(percentage_laid_off), MIN(percentage_laid_off)
-   FROM world_layoffs.layoffs_staging2
-   WHERE  percentage_laid_off IS NOT NULL;
+   FROM world_layoffs.layoffs_staging2;
    ```
    This query retrieves the highest and lowest percentage of employees laid off across all records, providing insights into the extent of layoffs relative to company size.
 
