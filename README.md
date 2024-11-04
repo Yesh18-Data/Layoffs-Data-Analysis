@@ -304,9 +304,10 @@ Summary of Missing Data:
 
 Total Laid Off: 31.34% of rows are missing values, indicating significant missing data.
 Percentage Laid Off: 33.25% of rows are also missing values, which is similarly concerning.
-Recommendations:
+funds_raised_millions: 8.0986% of rows are also missing values, comparitively less with above features
 
-Delete Rows: Consider deleting rows with NULL values in the total_laid_off and percentage_laid_off columns to ensure the dataset is complete and to reduce potential bias in your analysis. This approach is preferred over imputation given the high percentages of missing data.
+Delete Rows: Consider deleting rows with NULL values in the total_laid_off and percentage_laid_off columns to ensure the dataset is complete and to reduce potential bias in your analysis. 
+
 
 ```bash
 
@@ -324,6 +325,67 @@ AND percentage_laid_off IS NULL;
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
 ```
+
+27. After deleting rows with null values in both `total_laid_off` and `percentage_laid_off` , still we left with 18.8632% nulls for `total_laid_off` , 21.2777% for `percentage_laid_off`, 8.0986% for `funds_raised_millions` then decided to do the simple Meadin imputation technique based on most appropriate dimension Industry in the dataset.
+
+ -Medial Imputation for `total_laid_off`
+Step 1: Calculate median `total_laid_off` for each industry
+```bash
+WITH RankedData AS (
+    SELECT 
+        industry, 
+        total_laid_off,
+        ROW_NUMBER() OVER (PARTITION BY industry ORDER BY total_laid_off) AS row_num,
+        COUNT(*) OVER (PARTITION BY industry) AS total_rows
+    FROM world_layoffs.layoffs_staging2
+    WHERE total_laid_off IS NOT NULL
+),
+MedianValues AS (
+    SELECT industry, AVG(total_laid_off) AS median_total_laid_off
+    FROM RankedData
+    WHERE row_num IN (FLOOR((total_rows + 1) / 2), CEIL((total_rows + 1) / 2))
+    GROUP BY industry
+)
+````
+-- Step 2: Update `total_laid_off` NULL values with calculated median values
+````bash
+UPDATE world_layoffs.layoffs_staging2 AS w
+JOIN MedianValues AS m ON w.industry = m.industry
+SET w.total_laid_off = COALESCE(w.total_laid_off, m.median_total_laid_off)
+WHERE w.total_laid_off IS NULL;
+````
+
+
+ - Medial Imputation for `percentage_laid_off`
+ Step 1: Calculate median `percentage_laid_off` for each industry
+```bash
+WITH RankedData AS (
+    SELECT 
+        industry, 
+        percentage_laid_off,
+        ROW_NUMBER() OVER (PARTITION BY industry ORDER BY percentage_laid_off) AS row_num,
+        COUNT(*) OVER (PARTITION BY industry) AS total_rows
+    FROM world_layoffs.layoffs_staging2
+    WHERE percentage_laid_off IS NOT NULL
+),
+MedianValues AS (
+    SELECT industry, AVG(percentage_laid_off) AS median_percentage_laid_off
+    FROM RankedData
+    WHERE row_num IN (FLOOR((total_rows + 1) / 2), CEIL((total_rows + 1) / 2))
+    GROUP BY industry
+)
+````
+Step 2: Update `total_laid_off` NULL values with calculated median values
+```bash
+UPDATE world_layoffs.layoffs_staging2 AS w
+JOIN MedianValues AS m ON w.industry = m.industry
+SET w.percentage_laid_off = COALESCE(w.percentage_laid_off, m.median_percentage_laid_off)
+WHERE w.percentage_laid_off IS NULL;
+```
+
+
+
+
 ## Exploratory Data Analysis (EDA)
 
 Conduct Exploratory Data Analysis (EDA): Explore the dataset to identify trends, patterns, and outliers while maintaining an open-minded approach, allowing for the discovery of unexpected insights, guided by initial inquiries about the data.
