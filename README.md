@@ -6,7 +6,7 @@
 3. [Dataset Description](#dataset-description)
 4. [Project Workflow](#project-workflow)
 5. [Power BI Dashboard](#power-bi-dashboard)
-6. [Findings and Insights](#findings-insights)
+6. [Findings and Insights](#findings-and-insights)
 
 
 
@@ -564,3 +564,78 @@ Each of these queries serves to explore different aspects of the layoffs data, f
 ![layoffs Data Analysis_page-0001](https://github.com/user-attachments/assets/a8ec9b55-61a2-451d-8a9c-2599235e0d7c)
 
 ## Findings and Insights
+
+
+### Key Findings
+
+1. **Scope of Layoffs (2020-March 2023)**
+   - **Total Companies**: 1,621 companies conducted layoffs over the past three years.
+   - **Total Layoffs**: Approximately 441,000 employees were laid off, with each company laying off an average of 208 employees.
+   - **Yearly Breakdown**:
+     - **2020**: 86,000 layoffs
+     - **2021**: 16,000 layoffs
+     - **2022**: 174,000 layoffs
+     - **2023**: 134,000 layoffs
+   - Layoffs peaked in 2022, possibly due to global economic pressures, inflation, and post-pandemic adjustments, while layoffs in 2023 remained high but slightly lower.
+
+2. **Corporate Funding Amid Layoffs**
+   - **Total Funds Raised**: Despite layoffs, these companies raised around $1.8 trillion over the three-year period.
+   - **Top Fundraising Countries**:
+     - **United States**: $1,260 billion
+     - **India**: $166 billion
+     - **United Kingdom**: $56 billion
+     - **Germany**: $51 billion
+     - **China**: $51 billion
+
+3. **Layoffs by Company Stage**
+   - **Post-IPO Companies**: Accounted for 51% of layoffs, indicating that even publicly listed companies faced significant workforce challenges.
+   - **Private Equity or Acquired Companies**: 19.07%, reflecting financial restructuring or acquisitions leading to downsizing.
+   - **Growth Stage Companies**: 14.36%, likely facing adjustments to operational expenses.
+   - **Mature Stage Companies**: 9.03%, despite their stability, indicating wider market pressures.
+   - **Early Stage Companies**: 7%, showing layoffs even among newer startups, which could be due to funding constraints.
+
+4. **Layoffs by Industry**
+   - The **Retail** (47,000 layoffs) and **Consumer** (46,000 layoffs) sectors were most affected, likely due to changing consumer behavior and economic uncertainty.
+   - Other major contributors:
+     - **IT/Other**: 38,000 layoffs
+     - **Transportation**: 36,000 layoffs
+     - **Finance**: 31,000 layoffs
+   - These industries combined accounted for around 65% of the total layoffs, suggesting that service-oriented and customer-driven sectors were more impacted.
+
+5. **Geographic Distribution of Layoffs**
+   - **United States**: 276,000 layoffs, by far the largest contributor.
+   - **India**: 37,000 layoffs, highlighting the impact on the country’s tech and service sectors.
+   - **Netherlands**: 17,000 layoffs
+   - **Sweden** and **Brazil**: 11,000 layoffs each
+   - **Germany**: 9,000 layoffs
+   - **United Kingdom** and **Canada**: 7,000 layoffs each
+   - **China**: 6,000 layoffs
+   - **Indonesia**: 4,000 layoffs
+   - The U.S. leads in both layoffs and funding, reflecting a high-risk, high-reward business environment where large-scale investments are often paired with substantial workforce adjustments.
+
+6. **Top Companies by Layoffs**
+   - Major tech companies led layoffs:
+     - **Amazon**: 18,150
+     - **Google**: 12,000
+     - **Meta**: 11,000
+     - **Salesforce**: 10,090
+     - **Microsoft**: 10,000
+     - Other notable contributors included **Philips** (10,000), **Ericsson** (8,500), **Uber** (7,585), **Dell** (6,650), and **Booking.com** (6,651).
+   - These companies faced substantial layoffs, likely as a result of both cost-cutting and restructuring efforts in response to a rapidly changing market environment.
+
+### Insights
+
+1. **Economic Impact on Mature Companies**:  
+   Layoffs were common among post-IPO and mature companies, likely due to market pressures and the need to meet high-growth expectations during economic slowdowns.
+
+2. **Sectoral Vulnerability**:  
+   Retail and consumer sectors saw the highest layoffs, driven by reduced spending and a shift to online shopping. Transportation and finance also faced challenges tied to consumer and economic shifts.
+
+3. **High Investment, High Instability**:  
+   Despite layoffs, companies, especially in the U.S., raised substantial funds, reflecting strong investor interest in tech and innovation but challenges in maintaining workforce stability.
+
+4. **Regional Impact**:  
+   Layoffs were concentrated in the U.S., while India's tech sector also faced significant job cuts, highlighting both countries’ exposure to global market shifts.
+
+5. **Tech Sector Realignment**:  
+   Major tech companies led layoffs, indicating an industry-wide move toward operational efficiency over rapid growth.
