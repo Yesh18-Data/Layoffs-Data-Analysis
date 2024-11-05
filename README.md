@@ -6,7 +6,7 @@
 3. [Dataset Description](#dataset-description)
 4. [Project Workflow](#project-workflow)
 5. [Power BI Dashboard](#power-bi-dashboard)
-6. [Actionable Strategies to Reduce Churn](#actionable-strategies-to-reduce-churn)
+6. [Findings and Insights](#findings-insights)
 
 
 
@@ -560,3 +560,7 @@ Here’s a description for each query in the provided SQL code related to analyz
     This query uses a CTE to calculate the rolling total of layoffs per month, providing insights into cumulative layoffs over time. 
 
 Each of these queries serves to explore different aspects of the layoffs data, from examining total layoffs and percentages to identifying trends over time and by various categories.
+## Power BI Dashboard
+![layoffs Data Analysis_page-0001](https://github.com/user-attachments/assets/a8ec9b55-61a2-451d-8a9c-2599235e0d7c)
+
+## Findings and Insights
