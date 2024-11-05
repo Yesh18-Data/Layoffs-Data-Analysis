@@ -29,6 +29,8 @@ To create a comprehensive ETL (Extract, Transform, Load) process in a MySQL data
      - Industry
      - Stages
      - Location
+3. **Power BI Dashboard**
+   - Creating Interactive Dashboard to Analysis      
 
 ## ETL Framework
 
