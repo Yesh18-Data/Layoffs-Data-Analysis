@@ -8,6 +8,7 @@
 5. [Power BI Dashboard](#power-bi-dashboard)
 6. [Findings and Insights](#findings-and-insights)
 
+**Disclaimer**: The insights presented in this analysis may not reflect the complete picture of layoffs from 2020 to 2023. The dataset used was downloaded from Kaggle and may not capture all industry or regional trends comprehensively.
 
 
 ## Project Objective:  
@@ -557,7 +558,9 @@ Here’s a description for each query in the provided SQL code related to analyz
     FROM DATE_CTE
     ORDER BY dates ASC;
     ```
-    This query uses a CTE to calculate the rolling total of layoffs per month, providing insights into cumulative layoffs over time. 
+    This query uses a CTE to calculate the rolling total of layoffs per month, providing insights into cumulative layoffs over time.
+
+
 
 Each of these queries serves to explore different aspects of the layoffs data, from examining total layoffs and percentages to identifying trends over time and by various categories.
 ## Power BI Dashboard
@@ -639,3 +642,6 @@ Each of these queries serves to explore different aspects of the layoffs data, f
 
 5. **Tech Sector Realignment**:  
    Major tech companies led layoffs, indicating an industry-wide move toward operational efficiency over rapid growth.
+
+
+
