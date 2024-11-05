@@ -1,4 +1,4 @@
-## Tools Used - MySQL, Power BI
+## Tools Used - MySQL, Power BI Desktop, Power BI Service
 
 ## Table of Contents
 1. [Project Objective](#project-objective)
@@ -10,6 +10,9 @@
 
 **Disclaimer**: The insights presented in this analysis may not reflect the complete picture of layoffs from 2020 to 2023. The dataset used was downloaded from Kaggle and may not capture all industry or regional trends comprehensively.
 
+**Live Dashboard**
+[View the Live Power BI Dashbaord](https://app.powerbi.com/view?r=eyJrIjoiZjYxYjYyYzAtMmNiYy00Mzk3LWEzOGUtMDNhY2
+Y5NGFlNWU3IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9)
 
 ## Project Objective:  
 To create a comprehensive ETL (Extract, Transform, Load) process in a MySQL database and develop Power BI reports utilizing layoffs data to achieve the following goals:
@@ -564,7 +567,72 @@ Here’s a description for each query in the provided SQL code related to analyz
 
 Each of these queries serves to explore different aspects of the layoffs data, from examining total layoffs and percentages to identifying trends over time and by various categories.
 ## Power BI Dashboard
-![layoffs Data Analysis_page-0001](https://github.com/user-attachments/assets/a8ec9b55-61a2-451d-8a9c-2599235e0d7c)
+![layoffs Data Analysis_page-0001](https://github.com/user-attachments/assets/53a27384-b4d8-4ad8-9940-93e22fa79826)
+
+
+### Current Setup:
+1. **Database Connection**: Connected to MySQL through ODBC in Power BI.
+2. **Separate Measures Table**: Created a dedicated table for measures, which helps in organizing calculations and keeps your model structured.
+3. **Calendar Table**: Built a calendar table, essential for time-based analysis and enabling features like time intelligence functions 
+4. **Stage Lifecycle Hierarchy**: Defined stages of company lifecycle in Power Query using a custom column, grouping companies into `Early Stage Funding`, `Growth Stage Funding`, `Mature Stages`, `Post-IPO`, and `Other`.
+
+1. **Total Layoffs**:
+   ```DAX
+   Total_Layoffs = SUM('LayoffsData'[layoffs])
+   ```
+
+2. **Average Layoffs per Company**:
+   ```DAX
+   Avg_Layoffs_Per_Company = DIVIDE([Total_Layoffs], DISTINCTCOUNT('layoffs_staging2'[company]))
+   ```
+
+4. **Layoffs by Stage Lifecycle**:
+   ```DAX
+   Layoffs_By_Stage_Lifecycle = 
+   CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[Stage_lifecycle]))
+   ```
+5. **Layoffs by Industry**:
+   ```DAX
+   Layoffs_By_Country = 
+   CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[industry]))
+   ```
+6. **Layoffs by Country**:
+   ```DAX
+   Layoffs_By_Country = 
+   CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[country]))
+	```
+7. **Total Companies**:
+```DAX
+No of Companies = DISTINCTCOUNT(layoffs_staging2[company])
+```
+8. **Total Funds raised**
+```DAX
+Total funds raised = SUM(layoffs_staging2[Funds_Raised])
+```
+9.**Funds Raised by Country**
+```DAX
+Funds_raised_By_Country = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[country]))
+```
+10.**Funds Raised by Indsutry**
+```DAX
+Funds_raised_By_Industry = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[industry]))
+```
+11.**Company Rank by Layoffs**
+```DAX
+CompanyRankByLayoffs = 
+RANKX(
+    ALL(layoffs_staging2[company]),         
+    CALCULATE([Total layoffs])
+```
+12.**Created Heirarchy for stage**
+```DAX
+Stage_lifecycle = if [[stage]] = "Seed" or [stage] = "Series A" or [stage] = "Series B" then "Early Stage Funding"
+  else if [stage] = "Series C" or [stage] = "Series D" or [stage] = "Series E" then "Growth Stage Funding"
+  else if [stage] = "Acquired"  or [stage] = "Private Equity" then "Mature Stages" else if [stage] = "Post-IPO" then "Post-IPO" else "Other"
+```
+ 
+
+
 
 ## Findings and Insights
 
