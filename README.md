@@ -577,55 +577,55 @@ Each of these queries serves to explore different aspects of the layoffs data, f
 4. **Stage Lifecycle Hierarchy**: Defined stages of company lifecycle in Power Query using a custom column, grouping companies into `Early Stage Funding`, `Growth Stage Funding`, `Mature Stages`, `Post-IPO`, and `Other`.
 
 1. **Total Layoffs**:
-   ```DAX
+   ```bash
    Total_Layoffs = SUM('LayoffsData'[layoffs])
    ```
 
 2. **Average Layoffs per Company**:
-   ```DAX
+   ```bash
    Avg_Layoffs_Per_Company = DIVIDE([Total_Layoffs], DISTINCTCOUNT('layoffs_staging2'[company]))
    ```
 
 4. **Layoffs by Stage Lifecycle**:
-   ```DAX
+   ```bash
    Layoffs_By_Stage_Lifecycle = 
    CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[Stage_lifecycle]))
    ```
 5. **Layoffs by Industry**:
-   ```DAX
+   ```bash
    Layoffs_By_Country = 
    CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[industry]))
    ```
 6. **Layoffs by Country**:
-   ```DAX
+   ```bash
    Layoffs_By_Country = 
    CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[country]))
    ```
 7. **Total Companies**:
-   ```DAX
+   ```bash
    No of Companies = DISTINCTCOUNT(layoffs_staging2[company])
    ``` 
 8. **Total Funds raised**
-   ```DAX
+   ```bash
    Total funds raised = SUM(layoffs_staging2[Funds_Raised])
     ```
 9. **Funds Raised by Country**
-  ```DAX
+  ```bash
   Funds_raised_By_Country = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[country]))
   ```
 10.**Funds Raised by Indsutry**
-```DAX
+```bash
 Funds_raised_By_Industry = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[industry]))
 ```
 11.**Company Rank by Layoffs**
-```DAX
+```bash
 CompanyRankByLayoffs = 
 RANKX(
     ALL(layoffs_staging2[company]),         
     CALCULATE([Total layoffs])
 ```
 12.**Created Heirarchy for stage**
-```DAX
+```bash
 Stage_lifecycle = 
     IF [stage] = "Seed" || [stage] = "Series A" || [stage] = "Series B" 
     THEN "Early Stage Funding"
@@ -637,7 +637,7 @@ Stage_lifecycle =
     THEN "Post-IPO"
     ELSE "Other"
 ```
- 
+
 
 
 ## Findings and Insights
