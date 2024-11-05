@@ -10,10 +10,8 @@
 
 **Disclaimer**: The insights presented in this analysis may not reflect the complete picture of layoffs from 2020 to 2023. The dataset used was downloaded from Kaggle and may not capture all industry or regional trends comprehensively.
 
-**Live Dashboard**
-[View the Live Power BI Dashbaord](https://app.powerbi.com/view?
-r=eyJrIjoiZjYxYjYyYzAtMmNiYy00Mzk3LWEzOGUtMDNhY2
-Y5NGFlNWU3IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9)
+### Live Dashboard
+[View Live Dashboard](https://app.powerbi.com/view?r=eyJrIjoiZjYxYjYyYzAtMmNiYy00Mzk3LWEzOGUtMDNhY2Y5NGFlNWU3IiwidCI6ImRmODY3OWNkLWE4MGUtNDVkOC05OWFjLWM4M2VkN2ZmOTVhMCJ9)
 
 
 ## Project Objective:  
