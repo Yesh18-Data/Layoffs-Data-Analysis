@@ -600,19 +600,19 @@ Each of these queries serves to explore different aspects of the layoffs data, f
    ```DAX
    Layoffs_By_Country = 
    CALCULATE([Total_Layoffs], ALLEXCEPT('layoffs_staging2', 'layoffs_staging2'[country]))
-	```
+   ```
 7. **Total Companies**:
-```DAX
-No of Companies = DISTINCTCOUNT(layoffs_staging2[company])
-```
+   ```DAX
+   No of Companies = DISTINCTCOUNT(layoffs_staging2[company])
+   ``` 
 8. **Total Funds raised**
-```DAX
-Total funds raised = SUM(layoffs_staging2[Funds_Raised])
-```
-9.**Funds Raised by Country**
-```DAX
-Funds_raised_By_Country = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[country]))
-```
+   ```DAX
+   Total funds raised = SUM(layoffs_staging2[Funds_Raised])
+    ```
+9. **Funds Raised by Country**
+  ```DAX
+  Funds_raised_By_Country = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[country]))
+  ```
 10.**Funds Raised by Indsutry**
 ```DAX
 Funds_raised_By_Industry = CALCULATE([Total funds raised],ALLEXCEPT(layoffs_staging2,layoffs_staging2[industry]))
@@ -626,12 +626,18 @@ RANKX(
 ```
 12.**Created Heirarchy for stage**
 ```DAX
-Stage_lifecycle = if [[stage]] = "Seed" or [stage] = "Series A" or [stage] = "Series B" then "Early Stage Funding"
-  else if [stage] = "Series C" or [stage] = "Series D" or [stage] = "Series E" then "Growth Stage Funding"
-  else if [stage] = "Acquired"  or [stage] = "Private Equity" then "Mature Stages" else if [stage] = "Post-IPO" then "Post-IPO" else "Other"
+Stage_lifecycle = 
+    IF [stage] = "Seed" || [stage] = "Series A" || [stage] = "Series B" 
+    THEN "Early Stage Funding"
+    ELSE IF [stage] = "Series C" || [stage] = "Series D" || [stage] = "Series E" 
+    THEN "Growth Stage Funding"
+    ELSE IF [stage] = "Acquired" || [stage] = "Private Equity" 
+    THEN "Mature Stages"
+    ELSE IF [stage] = "Post-IPO" 
+    THEN "Post-IPO"
+    ELSE "Other"
 ```
  
-
 
 
 ## Findings and Insights
